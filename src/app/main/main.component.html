@@ -1,11 +1,18 @@
+<div class="selectionButtonContainer">
+  <div>{{this.selectedPerson}}</div>
+</div>
 <div class="formIntake">
-  <form [formGroup]="intakeFormGroup">
-
-    <button class="topButton" mat-raised-button (click)="goToLaura()">Laura</button>
-    <button class="topButton" mat-raised-button (click)="goToArnaud()">Arnaud</button>
-
+  <form  [formGroup]="intakeFormGroup">
     <h1 *ngIf="this.isOverMaxIntake()">OW ! STOP MANGER GROS PORC</h1>
     <div class="spinnerContainer">
+      <mat-progress-spinner
+        class="progressSpinnerBackground"
+        [color]="'warn'"
+        [diameter]="this.spinnerDiameter"
+        [strokeWidth]="14"
+        [mode]="'determinate'"
+        [value]="100">
+      </mat-progress-spinner>
       <mat-progress-spinner
         class="progressSpinner"
         [color]="getColorStateOfSpinner()"
@@ -14,10 +21,15 @@
         [mode]="'determinate'"
         [value]="getSpinnerProgressValue()">
       </mat-progress-spinner>
+
+
     </div>
 
-    <div class="textInSpinner" [ngStyle]="getSpinnerTextStyle()">
+    <div class="textInSpinner" [ngStyle]="getSpinnerTextStyle()" *ngIf="this.itemForSelectedUser.targetIntake > 0">
       {{getTotalCurrentIntakesFromSelectedUser()}} / {{this.itemForSelectedUser.targetIntake}}
+    </div>
+    <div  class="textInSpinnerNotSelected" [ngStyle]="getSpinnerTextStyle()" *ngIf="this.itemForSelectedUser.nickname === ''">
+      {{getCurrentSmiley()}}
     </div>
 
     <mat-form-field appearance="standard">
@@ -40,4 +52,10 @@
       Ajouter l'apport
     </button>
   </form>
+
+  <app-intakes-history
+    [currentIntakes]="this.selectedUserIntakes"
+  ></app-intakes-history>
 </div>
+
+

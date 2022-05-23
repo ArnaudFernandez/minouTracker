@@ -1,7 +1,34 @@
-
-
 .globalContainer {
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.8);
 }
+
+.spacingToolbar {
+  height: 50px;
+  width: 100vw;
+}
+
+app-topbar {
+  position: fixed !important;
+  width: 100vw;
+  z-index: 99;
+}
+
+.appContent {
+  display: flex;
+}
+
+.sidenavMenu {
+  padding: 20px;
+  width: 250px;
+}
+
+.topMenuContainer > h2 , .topMenuContainer > .menuCloseButton {
+  display: inline-block;
+}
+
+.topMenuContainer {
+  width: 100%;
+  height: 50px;
+}
+

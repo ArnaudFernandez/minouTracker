@@ -1,3 +1,14 @@
 .appTitle {
   margin: auto;
 }
+
+.buttonMenu {
+  position: fixed;
+}
+
+::ng-deep {
+  .menuCloseButton {
+    border-radius: 10px;
+    float: right;
+  }
+}

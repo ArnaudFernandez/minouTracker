@@ -16,12 +16,17 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {AngularFireModule} from "@angular/fire/compat";
 import {AngularFireDatabaseModule} from "@angular/fire/compat/database";
+import { IntakesHistoryComponent } from './main/intakes-history/intakes-history.component';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatTreeModule} from '@angular/material/tree';
 
 @NgModule({
   declarations: [
     AppComponent,
     MainComponent,
-    TopbarComponent
+    TopbarComponent,
+    IntakesHistoryComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +54,10 @@ import {AngularFireDatabaseModule} from "@angular/fire/compat/database";
       appId: "1:588509586658:web:334cb1ed45319ff2592abb",
       measurementId: "G-G9PZNFDF99"
     }),
-    AngularFireDatabaseModule
+    AngularFireDatabaseModule,
+    MatChipsModule,
+    MatSidenavModule,
+    MatTreeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1653215440886,
+  "timestamp": 1653347394486,
   "index": "https://arnaudfernandez.github.io/minouTracker/index.html",
   "assetGroups": [
     {
@@ -13,11 +13,11 @@
       "urls": [
         "https://arnaudfernandez.github.io/minouTracker/favicon.ico",
         "https://arnaudfernandez.github.io/minouTracker/index.html",
-        "https://arnaudfernandez.github.io/minouTracker/main.a51049417e9df1dc.js",
+        "https://arnaudfernandez.github.io/minouTracker/main.a31bd58a0b1e4f42.js",
         "https://arnaudfernandez.github.io/minouTracker/manifest.webmanifest",
         "https://arnaudfernandez.github.io/minouTracker/polyfills.dfe807690083d2af.js",
         "https://arnaudfernandez.github.io/minouTracker/runtime.6b0788f0d53383d9.js",
-        "https://arnaudfernandez.github.io/minouTracker/styles.9688fa67f1cc9041.css"
+        "https://arnaudfernandez.github.io/minouTracker/styles.ba61614743f71b87.css"
       ],
       "patterns": []
     },
@@ -54,12 +54,12 @@
     "https://arnaudfernandez.github.io/minouTracker/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
     "https://arnaudfernandez.github.io/minouTracker/assets/icons/minou.png": "38a301a2486f7dd4c2f18ee3269415d20605a422",
     "https://arnaudfernandez.github.io/minouTracker/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
-    "https://arnaudfernandez.github.io/minouTracker/index.html": "6f701625aea7297cacfc4853c69facff52f9adac",
-    "https://arnaudfernandez.github.io/minouTracker/main.a51049417e9df1dc.js": "c353749528a713b6d503b0253c2bdf9f268880c8",
+    "https://arnaudfernandez.github.io/minouTracker/index.html": "a1329454c3d91acbe384029fdecf25ede5a492cd",
+    "https://arnaudfernandez.github.io/minouTracker/main.a31bd58a0b1e4f42.js": "2e2a3afa5d0aea058df03c01a62c1199784ca8fe",
     "https://arnaudfernandez.github.io/minouTracker/manifest.webmanifest": "dbb2f1bc8fd549e3d316392fc6eb4a88e47d65b1",
     "https://arnaudfernandez.github.io/minouTracker/polyfills.dfe807690083d2af.js": "e0e2c8cdb5331c14e72a732b5602eb7a8cb6721b",
     "https://arnaudfernandez.github.io/minouTracker/runtime.6b0788f0d53383d9.js": "0b572c14b6dbe8cef44ea2d0df9df4c2ae1e030f",
-    "https://arnaudfernandez.github.io/minouTracker/styles.9688fa67f1cc9041.css": "92c5768b7b59306322844f36617f9646ca587612"
+    "https://arnaudfernandez.github.io/minouTracker/styles.ba61614743f71b87.css": "6c44d8f53cee8158ffa5a6c85e01a61915ffab58"
   },
   "navigationUrls": [
     {

@@ -1,0 +1,16 @@
+<div class="historiqueContainer">
+  <h2>Historique journalier</h2>
+  <div *ngIf="currentIntakes.length === 0"><div class="textVide">🤔</div></div>
+  <div *ngIf="currentIntakes.length > 0"><div class="totalCaloriesText"><b>{{calculateTotalCalories()}}</b> total calories</div></div>
+  <div *ngFor="let intakes of currentIntakes">
+    <mat-chip-list aria-label="Intakes">
+      <mat-chip>
+        {{intakes.titleIntake}} | {{intakes.intakeValue}} cal.
+        <button matChipRemove>
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip>
+    </mat-chip-list>
+
+  </div>
+</div>

@@ -1,5 +1,7 @@
 <mat-toolbar>
-    <!-- TODO : Menu button to navigate -->
+  <button mat-icon-button (click)="this.menuButtonClicked.emit(true)" aria-label="Menu" class="buttonMenu">
+    <mat-icon>menu</mat-icon>
+  </button>
   <div class="appTitle">
     <h1>Minou Tracker</h1>
   </div>
