@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {SwUpdate} from "@angular/service-worker";
 import {FlatTreeControl} from "@angular/cdk/tree";
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
+import {Router, RouterOutlet} from '@angular/router';
 
 /** Flat node with expandable and level information */
 interface MenuNode {
@@ -17,6 +18,8 @@ interface MenuNode {
 interface MenuNode {
   name: string;
   children?: MenuNode[];
+  navigateUrl?: string;
+  isPerson?: boolean;
 }
 
 @Component({
@@ -32,6 +35,8 @@ export class AppComponent {
     return {
       expandable: !!node.children && node.children.length > 0,
       name: node.name,
+      isPerson: node.isPerson,
+      navigateUrl: node.navigateUrl,
       level: level,
     };
   };
@@ -39,13 +44,21 @@ export class AppComponent {
   menuContent: any[] = [
     {
       name: 'Personnes',
-      children: [{name: 'Arnaud'}, {name: 'Laura'}],
+      children: [{name: 'Arnaud', navigateUrl: 'home', isPerson: true}, {name: 'Laura', navigateUrl: 'home', isPerson: true}],
+    },
+    {
+      name: 'Tracker',
+      children: [{name: 'Tracking du jour', navigateUrl: 'tracker'}],
+    },
+    {
+      name: 'Statistiques',
+      children: [{name: 'Evolution poids', navigateUrl: 'statistiques'}],
     }
   ];
 
   treeControl = new FlatTreeControl<MenuNode>(
     node => node.level,
-    node => node.expandable,
+    node => node.expandable
   );
 
   treeFlattener = new MatTreeFlattener(
@@ -57,14 +70,25 @@ export class AppComponent {
 
   hasChild = (_: number, node: MenuNode) => node.expandable;
 
-
   selectedPerson?: string = undefined;
+  routing: Router;
 
-  constructor(updates: SwUpdate) {
+  constructor(updates: SwUpdate,
+              routing: Router) {
     updates.available.subscribe(event => {
       updates.activateUpdate().then( _ => {document.location.reload()});
     })
-
     this.dataSource.data = this.menuContent;
+    this.routing = routing;
+  }
+
+  menuButtonClicked(node: MenuNode): void {
+    console.log(node);
+    if (node.isPerson) {
+      this.selectedPerson = node.name
+      this.routing.navigate([`${node.navigateUrl}`])
+    } else {
+      this.routing.navigate([`${node.navigateUrl}`])
+    }
   }
 }

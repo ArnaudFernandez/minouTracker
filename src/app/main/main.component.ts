@@ -3,13 +3,9 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AngularFirestore} from "@angular/fire/compat/firestore";
 import {ServiceIntakeService} from "../service-intake.service";
 import {Intakes} from "../class/intakes";
-import firebase from "firebase/compat/app";
-import Timestamp = firebase.firestore.Timestamp;
-import {sanitizeIdentifier} from "@angular/compiler";
 import {interval, Subscription} from "rxjs";
 
 @Component({
-  selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })

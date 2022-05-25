@@ -9,12 +9,12 @@
 
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
       <!-- This is the tree node template for leaf nodes -->
-      <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding="0">
+      <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding="1">
         <!-- use a disabled button to provide padding for tree leaf -->
         <button mat-icon-button disabled></button>
-        <button mat-raised-button (click)="this.selectedPerson = node.name; drawer.toggle()">
+        <a mat-raised-button (click)="menuButtonClicked(node); drawer.toggle()">
           {{node.name}}
-        </button>
+        </a>
       </mat-tree-node>
       <!-- This is the tree node template for expandable nodes -->
       <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding="0">
@@ -32,9 +32,9 @@
 
   <div class="globalContainer">
     <app-topbar
-      (menuButtonClicked)="drawer.toggle()"></app-topbar>
+      (menuButtonClicked)="drawer.toggle()">
+    </app-topbar>
     <div class="spacingToolbar"></div>
-    <app-main
-    [selectedPerson]="this.selectedPerson"></app-main>
+      <router-outlet></router-outlet>
   </div>
 </mat-drawer-container>

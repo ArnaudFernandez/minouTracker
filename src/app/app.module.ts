@@ -20,16 +20,27 @@ import { IntakesHistoryComponent } from './main/intakes-history/intakes-history.
 import {MatChipsModule} from '@angular/material/chips';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatTreeModule} from '@angular/material/tree';
+import {RouterModule} from '@angular/router';
+import {HttpClientModule} from '@angular/common/http';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+
+const routes = [
+  { path: 'home', component: MainComponent},
+  { path: '', redirectTo: 'home', pathMatch: 'full'},
+  { path: '**', component: PageNotFoundComponent}
+]
 
 @NgModule({
   declarations: [
     AppComponent,
     MainComponent,
     TopbarComponent,
-    IntakesHistoryComponent
+    IntakesHistoryComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
@@ -57,7 +68,8 @@ import {MatTreeModule} from '@angular/material/tree';
     AngularFireDatabaseModule,
     MatChipsModule,
     MatSidenavModule,
-    MatTreeModule
+    MatTreeModule,
+    RouterModule.forRoot(routes)
   ],
   providers: [],
   bootstrap: [AppComponent]
