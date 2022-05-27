@@ -3,16 +3,16 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AngularFirestore} from "@angular/fire/compat/firestore";
 import {ServiceIntakeService} from "../service-intake.service";
 import {Intakes} from "../class/intakes";
-import {interval, Subscription} from "rxjs";
+import {interval, Observable, Subscription} from "rxjs";
+import {User} from '../class/user';
 
 @Component({
-  templateUrl: './main.component.html',
-  styleUrls: ['./main.component.scss']
+  templateUrl: './tracker.component.html',
+  styleUrls: ['./tracker.component.scss']
 })
-export class MainComponent implements OnInit, OnChanges {
+export class TrackerComponent implements OnInit {
 
-  @Input()
-  selectedPerson?: string = undefined;
+  selectedPerson?: User = undefined;
   lastPersonSelected?: string = undefined;
 
   /** Value for progress spinner */
@@ -22,31 +22,42 @@ export class MainComponent implements OnInit, OnChanges {
 
   /** Database items & selectors */
   items: unknown[] = [];
-  itemForSelectedUser: {nickname: string, currentIntake: string, targetIntake: string | number} = {
+  itemForSelectedUser: { nickname: string, currentIntake: string, targetIntake: string | number } = {
     nickname: '',
     currentIntake: '',
     targetIntake: ''
   };
   selectedUserIntakes: Intakes[] = [];
-  serviceIntake : ServiceIntakeService;
+  serviceIntake: ServiceIntakeService;
 
   // Emoji animation
-  sportiveSmileyAnimation : string[] = ['🥵', '🤙', '🥗', '🍆', '🍌', '🍅', '🚀', '🏆', '🥇', '🚿', '🍳', '🏃', '🤸'];
+  sportiveSmileyAnimation: string[] = ['🥵', '🤙', '🥗', '🍆', '🍌', '🍅', '🚀', '🏆', '🥇', '🚿', '🍳', '🏃', '🤸'];
   indexRandomIcon = 0;
   emojiSubscription: Subscription = new Subscription();
 
-  //
   /** FormGroup intake */
   intakeFormGroup: FormGroup = new FormGroup({
     titleIntake: new FormControl('', Validators.minLength(1)),
     intakeValue: new FormControl('', Validators.min(1))
   })
 
+  /** FormGroup setup target intake */
+  targetIntakeSetupFormGroup: FormGroup = new FormGroup({
+    targetIntake: new FormControl('', Validators.minLength(1))
+  })
+
   constructor(db: AngularFirestore, serviceIntake: ServiceIntakeService) {
     this.serviceIntake = serviceIntake;
-     db.collection('person').valueChanges().subscribe( v => {
-       this.items = v as unknown[];
+    this.serviceIntake.getAllIntakesDocuments()?.subscribe(v => {
+      this.items = v as unknown[];
     });
+    this.serviceIntake.getPersonConnectedInfos()?.subscribe(v => {
+      if (v.length > 0) {
+        this.selectedPerson = v[0];
+      } else {
+        this.selectedPerson = {displayName: '', targetIntake: 0}
+      }
+    })
   }
 
   ngOnInit(): void {
@@ -56,16 +67,11 @@ export class MainComponent implements OnInit, OnChanges {
     });
 
     const emojiLoop = interval(2000);
-    this.emojiSubscription = emojiLoop.subscribe( _ => {
+    this.emojiSubscription = emojiLoop.subscribe(_ => {
       this.indexRandomIcon = Math.trunc((Math.random() * (this.sportiveSmileyAnimation.length - 1) + 1) - 1);
-    })
-  }
+    });
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (this.lastPersonSelected === undefined || this.lastPersonSelected !== this.selectedPerson) {
-      this.lastPersonSelected = this.selectedPerson;
-      this.setItemsForSelectedUser();
-    }
+    this.setIntakesFromSelectedUser();
   }
 
   resetTitleIntake(): void {
@@ -87,10 +93,16 @@ export class MainComponent implements OnInit, OnChanges {
       titleIntake: '',
       intakeValue: undefined
     });
+    this.targetIntakeSetupFormGroup.reset({
+      targetIntake: undefined
+    });
   }
 
   getSpinnerProgressValue(): number {
-    return (this.getTotalCurrentIntakesFromSelectedUser() / (this.itemForSelectedUser.targetIntake as number) * 100)
+    if (this.selectedPerson) {
+      return (this.getTotalCurrentIntakesFromSelectedUser() / (this.selectedPerson?.targetIntake as number) * 100)
+    }
+    return 0;
   }
 
   getColorStateOfSpinner(): 'primary' | 'warn' {
@@ -117,19 +129,18 @@ export class MainComponent implements OnInit, OnChanges {
     if (this.intakeFormGroup.value.intakeValue && this.intakeFormGroup.value.titleIntake) {
       this.serviceIntake.addIntakes(this.itemForSelectedUser.nickname, this.intakeFormGroup.value.intakeValue, this.intakeFormGroup.value.titleIntake);
       this.setItemsForSelectedUser();
+      this.resetAllForm();
+    }
+  }
+
+  ajouterObjectif(): void {
+    if (this.targetIntakeSetupFormGroup.value.targetIntake) {
+      this.serviceIntake.addTargetIntake(this.targetIntakeSetupFormGroup.value.targetIntake);
+      this.setItemsForSelectedUser();
       this.resetAllForm()
     }
   }
 
-  goToLaura(): void {
-    this.selectedPerson = 'Laura';
-    this.setItemsForSelectedUser();
-  }
-
-  goToArnaud(): void {
-    this.selectedPerson = 'Arnaud';
-    this.setItemsForSelectedUser();
-  }
 
   getTotalCurrentIntakesFromSelectedUser(): number {
     let total = 0;
@@ -137,6 +148,31 @@ export class MainComponent implements OnInit, OnChanges {
       total += intake.intakeValue;
     });
     return total;
+  }
+
+  getSelectedPerson(): User {
+    const jsonPerson = JSON.parse(localStorage.getItem('user') as string);
+    if (jsonPerson) {
+      return jsonPerson as User;
+    }
+    return {};
+  }
+
+  getTargetIntakeOfSelectedUser(): number {
+    if (this.selectedPerson?.targetIntake) {
+      return (this.selectedPerson.targetIntake as number);
+    }
+    return 0;
+  }
+
+  isUserLoggedAndWithoutTargetIntake(): boolean {
+    if (!this.selectedPerson) {
+      return false;
+    }
+    if (this.selectedPerson.targetIntake === undefined || this.selectedPerson.targetIntake <= 0) {
+      return true;
+    }
+    return false;
   }
 
   private getSmileyAnimation(): string {
@@ -148,13 +184,12 @@ export class MainComponent implements OnInit, OnChanges {
   }
 
   private setIntakesFromSelectedUser(): void {
-    this.serviceIntake.getAllIntakesDocuments().subscribe( value => {
+    (this.serviceIntake.getAllIntakesDocuments() as Observable<Intakes[]>).subscribe(value => {
       this.selectedUserIntakes = [];
       value.forEach(intakeDoc => {
         intakeDoc.dateFormatted = intakeDoc.date.toDate();
         // @ts-ignore
-        if (intakeDoc.nickname === this.selectedPerson
-          && intakeDoc.dateFormatted.getDate() === new Date().getDate()
+        if (intakeDoc.dateFormatted.getDate() === new Date().getDate()
           && intakeDoc.dateFormatted.getMonth() === new Date().getMonth()
           && intakeDoc.dateFormatted.getFullYear() === new Date().getFullYear()
         ) {
@@ -165,7 +200,7 @@ export class MainComponent implements OnInit, OnChanges {
   }
 
   private setItemsForSelectedUser(): void {
-    this.items.forEach( item => {
+    this.items.forEach(item => {
       // @ts-ignore
       if (item.nickname === this.selectedPerson) {
         // @ts-ignore

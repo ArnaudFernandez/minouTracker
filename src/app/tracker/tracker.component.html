@@ -1,0 +1,78 @@
+<div *ngIf="!isUserLoggedAndWithoutTargetIntake()">
+  <div class="selectionButtonContainer">
+    <div>{{getSelectedPerson().displayName}}</div>
+  </div>
+  <div class="formIntake">
+    <form  [formGroup]="intakeFormGroup">
+      <h1 *ngIf="this.isOverMaxIntake()">OW ! STOP MANGER GROS PORC</h1>
+      <div class="spinnerContainer">
+        <mat-progress-spinner
+          class="progressSpinnerBackground"
+          [color]="'warn'"
+          [diameter]="this.spinnerDiameter"
+          [strokeWidth]="14"
+          [mode]="'determinate'"
+          [value]="100">
+        </mat-progress-spinner>
+        <mat-progress-spinner
+          class="progressSpinner"
+          [color]="getColorStateOfSpinner()"
+          [diameter]="this.spinnerDiameter"
+          [strokeWidth]="15"
+          [mode]="'determinate'"
+          [value]="getSpinnerProgressValue()">
+        </mat-progress-spinner>
+
+
+      </div>
+
+      <div class="textInSpinner" [ngStyle]="getSpinnerTextStyle()" *ngIf="getTargetIntakeOfSelectedUser() > 0">
+        {{getTotalCurrentIntakesFromSelectedUser()}} / {{(this.selectedPerson?.targetIntake)}}
+      </div>
+      <div  class="textInSpinnerNotSelected" [ngStyle]="getSpinnerTextStyle()" *ngIf="getTargetIntakeOfSelectedUser() === 0">
+        {{getCurrentSmiley()}}
+      </div>
+
+      <mat-form-field appearance="standard">
+        <mat-label>Titre de l'apport calorique</mat-label>
+        <input matInput type="text" formControlName="titleIntake">
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="resetTitleIntake()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field appearance="standard">
+        <mat-label>Montant calorique</mat-label>
+        <input matInput type="number" formControlName="intakeValue">
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="resetIntakeValue()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <button mat-raised-button aria-label="Ajouter cet apport" (click)="ajouterApport()">
+        Ajouter l'apport
+      </button>
+    </form>
+
+    <app-intakes-history
+      [currentIntakes]="this.selectedUserIntakes"
+    ></app-intakes-history>
+  </div>
+</div>
+
+<div *ngIf="isUserLoggedAndWithoutTargetIntake()">
+  <div class="setTargetIntakeContainer">
+    <p style="font-size: 20px">Il semblerait que vous n'ayez pas d'objectif calorique journalier ...</p>
+    <div class="textVide" style="padding: 20px 0 50px 0">🤔</div>
+    <p style="font-size: 15px">Fixez-vous en un pour commencer à utiliser le tracker !</p>
+    <form [formGroup]="targetIntakeSetupFormGroup">
+      <mat-form-field appearance="standard">
+        <mat-label>Objectif calorique journalier</mat-label>
+        <input matInput type="number" formControlName="targetIntake">
+      </mat-form-field>
+      <button mat-raised-button aria-label="Confirmer cet objectif (YOLO)" (click)="ajouterObjectif()">
+        Confirmer cet objectif (YOLO)
+      </button>
+    </form>
+  </div>
+</div>

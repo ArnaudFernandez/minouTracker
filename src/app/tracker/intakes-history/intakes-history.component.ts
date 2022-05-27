@@ -6,7 +6,7 @@ import {Intakes} from "../../class/intakes";
   templateUrl: './intakes-history.component.html',
   styleUrls: ['./intakes-history.component.scss']
 })
-export class IntakesHistoryComponent implements OnInit, OnChanges {
+export class IntakesHistoryComponent implements OnInit {
 
   @Input()
   currentIntakes : Intakes[] = [];
@@ -16,10 +16,6 @@ export class IntakesHistoryComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit(): void {
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    console.log(this.currentIntakes);
   }
 
   calculateTotalCalories(): number {
