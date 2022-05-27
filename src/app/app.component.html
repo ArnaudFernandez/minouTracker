@@ -6,8 +6,19 @@
         <mat-icon>close</mat-icon>
       </button>
     </div>
+    <div class="userNameButtonMenu">
+      <div *ngIf="this.authGuard.isUserLoggedIn()">
+        <img [src]="this.connectedUser?.photoURL" class="imageLoggedUser"/>
+        <br/>
+        Hello {{this.connectedUser?.displayName}} !
+      </div>
+      <div class="loginLogoutButton">
+        <a *ngIf="this.authGuard.isUserLoggedIn()" mat-button (click)="disconnect(); drawer.toggle()">Se déconnecter</a>
+        <a *ngIf="!this.authGuard.isUserLoggedIn()" mat-button (click)="drawer.toggle()" [routerLink]="['authentication']">Se connecter</a>
+      </div>
+    </div>
 
-    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" *ngIf="this.authGuard.isUserLoggedIn()">
       <!-- This is the tree node template for leaf nodes -->
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding="1">
         <!-- use a disabled button to provide padding for tree leaf -->

@@ -8,6 +8,7 @@
   width: min-content;
   text-align: center;
 }
+
 .formIntake > *{
   display: block;
   margin-left: auto;
@@ -52,4 +53,18 @@
     stroke-dasharray: 17.9 !important;
     overflow-x: hidden;
   }
+}
+
+.setTargetIntakeContainer {
+  text-align: center;
+  margin: auto;
+  width: 80vw;
+}
+
+.setTargetIntakeContainer > p:nth-child(1) {
+  padding: 10px 0 10px 0;
+}
+
+.textVide {
+  font-size: 40px;
 }

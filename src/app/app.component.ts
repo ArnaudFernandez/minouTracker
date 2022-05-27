@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {SwUpdate} from "@angular/service-worker";
 import {FlatTreeControl} from "@angular/cdk/tree";
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
-import {Router, RouterOutlet} from '@angular/router';
+import {Router} from '@angular/router';
+import {AuthGuard} from './shared/guard/auth.guard';
+import {User} from './class/user';
 
 /** Flat node with expandable and level information */
 interface MenuNode {
@@ -27,7 +29,7 @@ interface MenuNode {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   title = 'foodTrackingApp';
 
@@ -43,12 +45,12 @@ export class AppComponent {
 
   menuContent: any[] = [
     {
-      name: 'Personnes',
-      children: [{name: 'Arnaud', navigateUrl: 'home', isPerson: true}, {name: 'Laura', navigateUrl: 'home', isPerson: true}],
-    },
-    {
       name: 'Tracker',
       children: [{name: 'Tracking du jour', navigateUrl: 'tracker'}],
+    },
+    {
+      name: 'Historique',
+      children: [{name: 'Tracking du jour', navigateUrl: 'history'}],
     },
     {
       name: 'Statistiques',
@@ -72,18 +74,46 @@ export class AppComponent {
 
   selectedPerson?: string = undefined;
   routing: Router;
+  connectedUser?: User;
 
   constructor(updates: SwUpdate,
+              public authGuard: AuthGuard,
               routing: Router) {
     updates.available.subscribe(event => {
-      updates.activateUpdate().then( _ => {document.location.reload()});
+      updates.activateUpdate().then(_ => {
+        document.location.reload()
+      });
     })
     this.dataSource.data = this.menuContent;
     this.routing = routing;
+
+  }
+
+  ngOnInit() {
+    if (!this.authGuard.isUserLoggedIn()) {
+      this.routing.navigate(['authentication']);
+    }
+    this.setUserIfNotSet();
+  }
+
+  setUserIfNotSet() {
+    if (this.authGuard.isUserLoggedIn() && this.connectedUser === undefined && localStorage.getItem('user') !== undefined) {
+      const userJson = JSON.parse(localStorage.getItem('user') as string);
+      this.connectedUser = {
+        uid: userJson?.uid,
+        email: userJson?.email,
+        displayName: userJson?.displayName,
+        photoURL: userJson?.photoURL,
+        emailVerified: userJson?.emailVerified
+      }
+    }
+  }
+
+  disconnect(): void {
+    this.authGuard.disconnect();
   }
 
   menuButtonClicked(node: MenuNode): void {
-    console.log(node);
     if (node.isPerson) {
       this.selectedPerson = node.name
       this.routing.navigate([`${node.navigateUrl}`])
