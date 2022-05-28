@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
   menuContent: any[] = [
     {
       name: 'Tracker',
-      children: [{name: 'Tracking du jour', navigateUrl: 'tracker'}],
+      children: [{name: 'Tracking du jour', navigateUrl: 'tracker'}, {name: 'Team tracking', navigateUrl: 'teamTracking'}],
     },
     {
       name: 'Historique',

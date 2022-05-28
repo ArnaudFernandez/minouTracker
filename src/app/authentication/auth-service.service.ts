@@ -64,7 +64,9 @@ export class AuthService {
         const token = (credential as OAuthCredential).accessToken;
         // The signed-in user info.
         const user = result.user;
-        this.setUserData(user);
+        this.setUserData(user).then(() => {
+          this.router.navigate(['tracker']);
+        });
         this.router.navigate(['tracker']);
       }).catch((error) => {
       // Handle Errors here.
@@ -80,7 +82,7 @@ export class AuthService {
     });
   }
 
-  private setUserData(user: any) {
+  private setUserData(user: any): Promise<any> {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(
       `users/${user.uid}`
     );

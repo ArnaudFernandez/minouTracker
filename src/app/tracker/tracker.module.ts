@@ -14,16 +14,24 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {AuthGuard} from '../shared/guard/auth.guard';
+import { TeamTrackerComponent } from './team-tracker/team-tracker.component';
+import {MatCardModule} from "@angular/material/card";
+import { TeamTrackerProgressComponent } from './team-tracker/team-tracker-progress/team-tracker-progress.component';
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 @NgModule({
   declarations: [
     TrackerComponent,
-    IntakesHistoryComponent
+    IntakesHistoryComponent,
+    TeamTrackerComponent,
+    TeamTrackerProgressComponent
   ],
   imports: [
     CommonModule,
     RouterModule.forChild([
-      {path: 'tracker', component: TrackerComponent, canActivate: [AuthGuard]}
+      {path: 'tracker', component: TrackerComponent, canActivate: [AuthGuard]},
+      {path: 'teamTracking', component: TeamTrackerComponent, canActivate: [AuthGuard]},
+      {path: 'teamTracking/:id', component: TeamTrackerProgressComponent, canActivate: [AuthGuard]}
     ]),
     MatProgressSpinnerModule,
     MatFormFieldModule,
@@ -37,6 +45,8 @@ import {AuthGuard} from '../shared/guard/auth.guard';
     MatButtonModule,
     MatInputModule,
     MatIconModule,
+    MatCardModule,
+    MatProgressBarModule,
   ]
 })
 export class TrackerModule { }

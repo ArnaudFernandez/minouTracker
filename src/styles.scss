@@ -1,16 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
 
 html {
-  height: 100%;
   margin: 0;
   color: white;
   background-color: rgba(0, 0, 0, 0.8);
   background-attachment: fixed;
-  overflow-x: hidden;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  max-width: 100%;
+  overflow: hidden;
 }
 

@@ -1,0 +1,28 @@
+<div class="goBackArrow">
+  <button mat-icon-button [routerLink]="'/teamTracking'" aria-label="Menu" class="buttonMenu">
+    <mat-icon>
+      keyboard_arrow_left
+    </mat-icon>
+    <mat-icon>
+      keyboard_arrow_left
+    </mat-icon>
+  </button>
+</div>
+
+<div class="membersContainer">
+  <h2>Progression de l'équipe</h2>
+  <div *ngFor="let user of this.teamMembers">
+    <h3>{{user.displayName}}</h3>
+
+    <div *ngIf="getValueForUser(user) <= 100">
+      <mat-progress-bar mode="determinate" [value]="getValueForUser(user)"></mat-progress-bar>
+    </div>
+    <div *ngIf="getValueForUser(user) > 100">
+      <mat-progress-bar  mode="determinate" [value]="getValueForUser(user)" [color]="'warn'"></mat-progress-bar>
+    </div>
+    <div class="membersContainer statusBarNumber">
+      {{this.getTotalCurrentIntakesFromSelectedUser(user.intakes)}} / {{user.targetIntake}}
+    </div>
+
+  </div>
+</div>
