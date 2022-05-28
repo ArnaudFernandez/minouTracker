@@ -1,4 +1,4 @@
-import {APP_INITIALIZER, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -23,6 +23,8 @@ import {HistoryModule} from './history/history.module';
 import {TrackerModule} from './tracker/tracker.module';
 import {AuthenticationComponent} from './authentication/authentication.component';
 import {AuthService} from './authentication/auth-service.service';
+import { SnackbarComponent } from './shared/snackbar/snackbar.component';
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 
 const routes = [
@@ -36,7 +38,8 @@ const routes = [
     AppComponent,
     TopbarComponent,
     PageNotFoundComponent,
-    AuthenticationComponent
+    AuthenticationComponent,
+    SnackbarComponent
   ],
   imports: [
     BrowserModule,
@@ -68,7 +71,8 @@ const routes = [
     MatTreeModule,
     RouterModule.forRoot(routes),
     HistoryModule,
-    TrackerModule
+    TrackerModule,
+    MatSnackBarModule
   ],
   providers: [AuthService],
   bootstrap: [AppComponent]

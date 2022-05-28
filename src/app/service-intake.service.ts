@@ -18,6 +18,13 @@ export class ServiceIntakeService {
     this.database = db;
   }
 
+
+  /**
+   *
+   * ADD SECTION
+   *
+   * **/
+
   addIntakes(nickname: string, intakeValue: number, titleIntake: string): void {
     if (this.authService.userData.uid) {
       this.database.collection('intakes').add({
@@ -63,6 +70,12 @@ export class ServiceIntakeService {
     }
   }
 
+  /**
+   *
+   * GET SECTION
+   *
+   **/
+
   getAllTeamsForUser(): Observable<TeamMembers[]> | undefined {
     if (JSON.parse(localStorage.getItem('user') as string).uid) {
       return (this.database.collection('teamMembers', ref =>
@@ -73,19 +86,17 @@ export class ServiceIntakeService {
   }
 
   getTeamFromOwnerId(ownerUid: string): Observable<Teams[]> | undefined {
-    if (JSON.parse(localStorage.getItem('user') as string).uid) {
-      return (this.database.collection('teams', ref =>
-        ref.where('ownerUid', '==', ownerUid)
-      ).valueChanges({idField: 'eventId'}) as Observable<Teams[]>);
-    }
-    return undefined;
+    console.log(ownerUid);
+    return (this.database.collection('teams', ref =>
+      ref.where('ownerUid', '==', ownerUid)
+    ).valueChanges({idField: 'eventId'}) as Observable<Teams[]>);
   }
 
-  getAllIntakesDocuments(): Observable<Intakes[]> | undefined{
+  getAllIntakesDocuments(): Observable<Intakes[]> | undefined {
     if (localStorage.getItem('user') !== undefined) {
       return this.database.collection('intakes', ref =>
         ref.where('uid', '==', JSON.parse(localStorage.getItem('user') as string).uid)
-      ).valueChanges() as Observable<Intakes[]>;
+      ).valueChanges({idField: 'eventId'}) as Observable<Intakes[]>;
     }
     return undefined;
   }
@@ -115,5 +126,16 @@ export class ServiceIntakeService {
     return this.database.collection('intakes', ref =>
       ref.where('uid', '==', uid)
     ).valueChanges() as Observable<Intakes[]>;
+  }
+
+
+  /**
+   *
+   * DELETE SECTION
+   *
+   * **/
+
+  deleteIntake(idIntake: string): void {
+    this.database.doc('intakes/'+idIntake).delete();
   }
 }

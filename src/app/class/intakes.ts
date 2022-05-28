@@ -2,6 +2,7 @@ import firebase from "firebase/compat/app";
 import Timestamp = firebase.firestore.Timestamp;
 
 export class Intakes {
+  eventId?: string;
   uid: string;
   intakeValue: number;
   nickname: string;

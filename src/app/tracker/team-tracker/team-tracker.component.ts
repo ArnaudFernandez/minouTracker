@@ -42,10 +42,8 @@ export class TeamTrackerComponent implements OnInit {
   getTeamsFromConnectedUser(): void {
     this.serviceIntakes.getAllTeamsForUser()?.subscribe(value => {
       value.forEach(teamThatUserHave => {
-        console.log(teamThatUserHave);
         this.serviceIntakes.getTeamFromOwnerId(teamThatUserHave.ownerUid as string)?.subscribe(team => {
           this.teams = team;
-          console.log(this.teams);
         })
       })
       this.userTeams = value;

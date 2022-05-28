@@ -1,5 +1,8 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Intakes} from "../../class/intakes";
+import {ServiceIntakeService} from "../../service-intake.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {SnackbarComponent} from "../../shared/snackbar/snackbar.component";
 
 @Component({
   selector: 'app-intakes-history',
@@ -13,7 +16,8 @@ export class IntakesHistoryComponent implements OnInit {
 
   totalIntakes = 0;
 
-  constructor() { }
+  constructor(public serviceIntake: ServiceIntakeService,
+              private _snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
   }
@@ -26,6 +30,20 @@ export class IntakesHistoryComponent implements OnInit {
       })
     }
     return this.totalIntakes;
+  }
+
+  removeIntake(intake: Intakes): void {
+    this.serviceIntake.deleteIntake(intake.eventId as string);
+    this.confirmDelete(intake);
+  }
+
+  private confirmDelete(intake: Intakes) {
+    this._snackBar.openFromComponent(SnackbarComponent, {
+      duration: 5 * 1000,
+      data: {
+        text: '⛔ ' + intake.titleIntake + ' supprimé --> ' + intake.intakeValue + ' cal. retirés du total journalier.'
+      }
+    });
   }
 
 }

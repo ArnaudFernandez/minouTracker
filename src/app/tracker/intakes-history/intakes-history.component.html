@@ -7,7 +7,7 @@
       <mat-chip>
         {{intakes.titleIntake}} | {{intakes.intakeValue}} cal.
         <button matChipRemove>
-          <mat-icon>cancel</mat-icon>
+          <mat-icon (click)="removeIntake(intakes)">cancel</mat-icon>
         </button>
       </mat-chip>
     </mat-chip-list>
