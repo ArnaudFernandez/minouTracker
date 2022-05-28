@@ -5,6 +5,8 @@ import {ServiceIntakeService} from "../service-intake.service";
 import {Intakes} from "../class/intakes";
 import {interval, Observable, Subscription} from "rxjs";
 import {User} from '../class/user';
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {SnackbarComponent} from "../shared/snackbar/snackbar.component";
 
 @Component({
   templateUrl: './tracker.component.html',
@@ -46,7 +48,7 @@ export class TrackerComponent implements OnInit {
     targetIntake: new FormControl('', Validators.minLength(1))
   })
 
-  constructor(db: AngularFirestore, serviceIntake: ServiceIntakeService) {
+  constructor(db: AngularFirestore, serviceIntake: ServiceIntakeService, private _snackbar: MatSnackBar) {
     this.serviceIntake = serviceIntake;
     this.serviceIntake.getAllIntakesDocuments()?.subscribe(v => {
       this.items = v as unknown[];
@@ -129,6 +131,12 @@ export class TrackerComponent implements OnInit {
     if (this.intakeFormGroup.value.intakeValue && this.intakeFormGroup.value.titleIntake) {
       this.serviceIntake.addIntakes(this.itemForSelectedUser.nickname, this.intakeFormGroup.value.intakeValue, this.intakeFormGroup.value.titleIntake);
       this.setItemsForSelectedUser();
+      this._snackbar.openFromComponent(SnackbarComponent, {
+        duration: 5 * 1000,
+        data: {
+          text: '🍴 ' + this.intakeFormGroup.value.titleIntake + ' ajouté --> ' + this.intakeFormGroup.value.intakeValue + ' cal. ajoutés au total journalier.'
+        }
+      });
       this.resetAllForm();
     }
   }
