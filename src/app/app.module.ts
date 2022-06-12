@@ -25,6 +25,8 @@ import {AuthenticationComponent} from './authentication/authentication.component
 import {AuthService} from './authentication/auth-service.service';
 import { SnackbarComponent } from './shared/snackbar/snackbar.component';
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import { BarcodeScannerComponent } from './barcode-scanner/barcode-scanner.component';
+import { BarcodeScannerLivestreamModule } from "ngx-barcode-scanner";
 
 
 const routes = [
@@ -39,7 +41,8 @@ const routes = [
     TopbarComponent,
     PageNotFoundComponent,
     AuthenticationComponent,
-    SnackbarComponent
+    SnackbarComponent,
+    BarcodeScannerComponent
   ],
   imports: [
     BrowserModule,
@@ -72,7 +75,8 @@ const routes = [
     RouterModule.forRoot(routes),
     HistoryModule,
     TrackerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    BarcodeScannerLivestreamModule
   ],
   providers: [AuthService],
   bootstrap: [AppComponent]
