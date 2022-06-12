@@ -31,6 +31,7 @@ import { BarcodeScannerLivestreamModule } from "ngx-barcode-scanner";
 
 const routes = [
   {path: 'authentication', component: AuthenticationComponent},
+  {path: 'scanner', component: BarcodeScannerComponent},
   {path: '', redirectTo: 'tracker', pathMatch: 'full'},
   {path: '**', component: PageNotFoundComponent}
 ]

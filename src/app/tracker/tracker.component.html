@@ -33,6 +33,18 @@
         {{getCurrentSmiley()}}
       </div>
 
+
+      <button mat-raised-button aria-label="Scanner code barre" (click)="goToScanner()">
+        Scanner le code barre
+      </button>
+
+      <br/>
+      <br/>
+      <br/>
+      <p>
+        <b>OU</b>
+      </p>
+
       <mat-form-field appearance="standard">
         <mat-label>Titre de l'apport calorique</mat-label>
         <input matInput type="text" formControlName="titleIntake">

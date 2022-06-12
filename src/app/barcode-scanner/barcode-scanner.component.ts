@@ -4,7 +4,6 @@ import {SnackbarComponent} from "../shared/snackbar/snackbar.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
-  selector: 'app-barcode-scanner',
   templateUrl: './barcode-scanner.component.html',
   styleUrls: ['./barcode-scanner.component.scss']
 })

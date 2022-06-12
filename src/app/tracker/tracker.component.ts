@@ -7,6 +7,7 @@ import {interval, Observable, Subscription} from "rxjs";
 import {User} from '../class/user';
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SnackbarComponent} from "../shared/snackbar/snackbar.component";
+import {Router} from "@angular/router";
 
 @Component({
   templateUrl: './tracker.component.html',
@@ -48,7 +49,10 @@ export class TrackerComponent implements OnInit {
     targetIntake: new FormControl('', Validators.minLength(1))
   })
 
-  constructor(db: AngularFirestore, serviceIntake: ServiceIntakeService, private _snackbar: MatSnackBar) {
+  constructor(db: AngularFirestore,
+              serviceIntake: ServiceIntakeService,
+              private _snackbar: MatSnackBar,
+              private router: Router) {
     this.serviceIntake = serviceIntake;
     this.serviceIntake.getAllIntakesDocuments()?.subscribe(v => {
       this.items = v as unknown[];
@@ -216,6 +220,10 @@ export class TrackerComponent implements OnInit {
       }
     })
     this.setIntakesFromSelectedUser();
+  }
+
+  goToScanner(): void {
+    this.router.navigate(['scanner']);
   }
 
 }
