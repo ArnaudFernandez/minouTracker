@@ -7,5 +7,8 @@ export interface User {
   photoURL?: string;
   emailVerified?: boolean;
   targetIntake?: number;
+  proteinTarget?: number;
+  carbohydratesTarget?: number;
+  fatTarget?: number;
   intakes?: Intakes[];
 }

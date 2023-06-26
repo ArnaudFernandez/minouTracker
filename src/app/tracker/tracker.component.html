@@ -4,7 +4,7 @@
   </div>
   <div class="formIntake">
     <form  [formGroup]="intakeFormGroup">
-      <h1 *ngIf="this.isOverMaxIntake()">OW ! STOP MANGER GROS PORC</h1>
+      <h1 style="color: red; margin-top: 15px" *ngIf="this.isOverMaxIntake()">OW ! STOP MANGER GROS PORC</h1>
       <div class="spinnerContainer">
         <mat-progress-spinner
           class="progressSpinnerBackground"
@@ -30,9 +30,9 @@
         {{getTotalCurrentIntakesFromSelectedUser()}} / {{(this.selectedPerson?.targetIntake)}}
       </div>
       <div class="textInSpinner" [ngStyle]="getSpinnerTextStyleMacros()" *ngIf="getTargetIntakeOfSelectedUser() > 0 && !this.isInIntakeView" (click)="switchIntakeMacrosDisplay()">
-        P : {{this.getCurrentProtein()}}<br/><br/>
-        G : {{this.getCurrentCarbohydrates()}}<br/><br/>
-        L : {{this.getCurrentFat()}}<br/>
+        P : {{this.getCurrentProtein()}} / {{this.selectedPerson?.proteinTarget}}<br/><br/>
+        G : {{this.getCurrentCarbohydrates()}} / {{this.selectedPerson?.carbohydratesTarget}} <br/><br/>
+        L : {{this.getCurrentFat()}} / {{this.selectedPerson?.fatTarget}} <br/>
       </div>
       <div  class="textInSpinnerNotSelected" [ngStyle]="getSpinnerTextStyle()" *ngIf="getTargetIntakeOfSelectedUser() === 0">
         {{getCurrentSmiley()}}
@@ -110,6 +110,12 @@
       <mat-form-field appearance="standard">
         <mat-label>Objectif calorique journalier</mat-label>
         <input matInput type="number" formControlName="targetIntake">
+        <mat-label>Objectif protéines journalier</mat-label>
+        <input matInput type="number" formControlName="proteinTarget">
+        <mat-label>Objectif glucides journalier</mat-label>
+        <input matInput type="number" formControlName="carbohydratesTarget">
+        <mat-label>Objectif lipides journalier</mat-label>
+        <input matInput type="number" formControlName="fatTarget">
       </mat-form-field>
       <button mat-raised-button aria-label="Confirmer cet objectif (YOLO)" (click)="ajouterObjectif()">
         Confirmer cet objectif (YOLO)

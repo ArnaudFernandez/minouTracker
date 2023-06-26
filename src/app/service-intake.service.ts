@@ -33,21 +33,29 @@ export class ServiceIntakeService {
     }
   }
 
-  addTargetIntake(targetIntake: number): void {
+  addTargetIntake(targetIntake: number, proteinTarget: number, carbohydratesTarget: number, fatTarget: number): void {
     if (JSON.parse(localStorage.getItem('user') as string).uid) {
-
       const personDoc = this.database.doc(`person/${this.authService.userData.uid}`);
       const personObject = JSON.parse(localStorage.getItem('user') as string) as User;
       const finalObjectToSave = {
         uid: personObject.uid,
         nickname: personObject.displayName,
-        targetIntake: targetIntake
+        targetIntake: targetIntake,
+        proteinTarget: proteinTarget,
+        carbohydratesTarget: carbohydratesTarget,
+        fatTarget: fatTarget
       }
       personDoc.set(finalObjectToSave, {
         merge: true,
       });
-      this.database.doc(`person/${this.authService.userData.uid}`).update({targetIntake: targetIntake});
-      this.database.doc(`users/${this.authService.userData.uid}`).update({targetIntake: targetIntake});
+      this.database.doc(`person/${this.authService.userData.uid}`).update({targetIntake: targetIntake,
+        proteinTarget: proteinTarget,
+        carbohydratesTarget: carbohydratesTarget,
+        fatTarget: fatTarget});
+      this.database.doc(`users/${this.authService.userData.uid}`).update({targetIntake: targetIntake,
+        proteinTarget: proteinTarget,
+        carbohydratesTarget: carbohydratesTarget,
+        fatTarget: fatTarget});
     }
   }
 

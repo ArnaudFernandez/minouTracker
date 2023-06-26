@@ -52,7 +52,10 @@ export class TrackerComponent implements OnInit {
 
   /** FormGroup setup target intake */
   targetIntakeSetupFormGroup: FormGroup = new FormGroup({
-    targetIntake: new FormControl('', Validators.minLength(1))
+    targetIntake: new FormControl('', Validators.minLength(1)),
+    proteinTarget: new FormControl('', Validators.minLength(1)),
+    carbohydratesTarget: new FormControl('', Validators.minLength(1)),
+    fatTarget: new FormControl('', Validators.minLength(1))
   })
 
   constructor(db: AngularFirestore,
@@ -224,7 +227,10 @@ export class TrackerComponent implements OnInit {
 
   ajouterObjectif(): void {
     if (this.targetIntakeSetupFormGroup.value.targetIntake) {
-      this.serviceIntake.addTargetIntake(this.targetIntakeSetupFormGroup.value.targetIntake);
+      this.serviceIntake.addTargetIntake(this.targetIntakeSetupFormGroup.value.targetIntake,
+        this.targetIntakeSetupFormGroup.value.proteinTarget,
+        this.targetIntakeSetupFormGroup.value.carbohydratesTarget,
+        this.targetIntakeSetupFormGroup.value.fatTarget);
       this.setItemsForSelectedUser();
       this.resetAllForm()
     }
