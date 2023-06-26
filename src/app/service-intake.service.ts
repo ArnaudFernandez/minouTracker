@@ -18,19 +18,15 @@ export class ServiceIntakeService {
     this.database = db;
   }
 
-
-  /**
-   *
-   * ADD SECTION
-   *
-   * **/
-
-  addIntakes(nickname: string, intakeValue: number, titleIntake: string): void {
+  addIntakes(nickname: string, intakeValue: number, titleIntake: string, protein: number, carbohydrates: number, fat: number): void {
     if (this.authService.userData.uid) {
       this.database.collection('intakes').add({
         nickname: nickname,
         intakeValue: intakeValue,
         titleIntake: titleIntake,
+        protein: protein,
+        carbohydrates: carbohydrates,
+        fat: fat,
         date: new Date(),
         uid: this.authService.userData.uid
       });

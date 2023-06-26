@@ -26,8 +26,13 @@
 
       </div>
 
-      <div class="textInSpinner" [ngStyle]="getSpinnerTextStyle()" *ngIf="getTargetIntakeOfSelectedUser() > 0">
+      <div class="textInSpinner" [ngStyle]="getSpinnerTextStyle()" *ngIf="getTargetIntakeOfSelectedUser() > 0 && this.isInIntakeView" (click)="switchIntakeMacrosDisplay()">
         {{getTotalCurrentIntakesFromSelectedUser()}} / {{(this.selectedPerson?.targetIntake)}}
+      </div>
+      <div class="textInSpinner" [ngStyle]="getSpinnerTextStyleMacros()" *ngIf="getTargetIntakeOfSelectedUser() > 0 && !this.isInIntakeView" (click)="switchIntakeMacrosDisplay()">
+        P : {{this.getCurrentProtein()}}<br/><br/>
+        G : {{this.getCurrentCarbohydrates()}}<br/><br/>
+        L : {{this.getCurrentFat()}}<br/>
       </div>
       <div  class="textInSpinnerNotSelected" [ngStyle]="getSpinnerTextStyle()" *ngIf="getTargetIntakeOfSelectedUser() === 0">
         {{getCurrentSmiley()}}
@@ -57,6 +62,30 @@
         <mat-label>Montant calorique</mat-label>
         <input matInput type="number" formControlName="intakeValue">
         <button matSuffix mat-icon-button aria-label="Clear" (click)="resetIntakeValue()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field appearance="standard">
+        <mat-label>Protéines</mat-label>
+        <input matInput type="number" formControlName="protein">
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="resetProteinValue()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field appearance="standard">
+        <mat-label>Glucides</mat-label>
+        <input matInput type="number" formControlName="carbohydrates">
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="resetCarbohydratesValue()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field appearance="standard">
+        <mat-label>Lipides</mat-label>
+        <input matInput type="number" formControlName="fat">
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="resetFatValue()">
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>
