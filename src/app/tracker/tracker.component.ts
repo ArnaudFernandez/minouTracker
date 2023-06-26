@@ -15,6 +15,9 @@ export class TrackerComponent implements OnInit {
   selectedPerson?: User = undefined;
   lastPersonSelected?: string = undefined;
 
+  /** Change view by clicking or tapping intake or macros */
+  isInIntakeView: boolean = true;
+
   /** Value for progress spinner */
   currentIntakeValue = 1200;
   maxIntakeForTheDay = 1300;
@@ -38,7 +41,10 @@ export class TrackerComponent implements OnInit {
   /** FormGroup intake */
   intakeFormGroup: FormGroup = new FormGroup({
     titleIntake: new FormControl('', Validators.minLength(1)),
-    intakeValue: new FormControl('', Validators.min(1))
+    intakeValue: new FormControl('', Validators.min(1)),
+    protein: new FormControl('', Validators.min(1)),
+    carbohydrates: new FormControl('', Validators.min(1)),
+    fat: new FormControl('', Validators.min(1))
   })
 
   /** FormGroup setup target intake */
@@ -63,8 +69,13 @@ export class TrackerComponent implements OnInit {
   ngOnInit(): void {
     this.intakeFormGroup.reset({
       titleIntake: '',
-      intakeValue: undefined
+      intakeValue: undefined,
+      protein: undefined,
+      carbohydrates: undefined,
+      fat: undefined
     });
+
+    this.indexRandomIcon = Math.trunc((Math.random() * (this.sportiveSmileyAnimation.length - 1) + 1) - 1);
 
     const emojiLoop = interval(2000);
     this.emojiSubscription = emojiLoop.subscribe(_ => {
@@ -88,6 +99,27 @@ export class TrackerComponent implements OnInit {
     });
   }
 
+  resetProteinValue(): void {
+    this.intakeFormGroup.reset({
+      ...this.intakeFormGroup.value,
+      protein: undefined
+    });
+  }
+
+  resetCarbohydratesValue(): void {
+    this.intakeFormGroup.reset({
+      ...this.intakeFormGroup.value,
+      carbohydrates: undefined
+    });
+  }
+
+  resetFatValue(): void {
+    this.intakeFormGroup.reset({
+      ...this.intakeFormGroup.value,
+      fat: undefined
+    });
+  }
+
   resetAllForm(): void {
     this.intakeFormGroup.reset({
       titleIntake: '',
@@ -98,18 +130,45 @@ export class TrackerComponent implements OnInit {
     });
   }
 
-  getSpinnerProgressValue(): number {
-    if (this.selectedPerson) {
-      return (this.getTotalCurrentIntakesFromSelectedUser() / (this.selectedPerson?.targetIntake as number) * 100)
-    }
-    return 0;
+  getCurrentProtein(): number {
+    let totalProtein = 0;
+    this.selectedUserIntakes.forEach(intake => {
+      totalProtein += intake.protein;
+    });
+    return totalProtein;
   }
 
-  getColorStateOfSpinner(): 'primary' | 'warn' {
+  getCurrentCarbohydrates(): number {
+    let totalCarbohydrates = 0;
+    this.selectedUserIntakes.forEach(intake => {
+      totalCarbohydrates += intake.carbohydrates;
+    });
+    return totalCarbohydrates;
+  }
+
+  getCurrentFat(): number {
+    let totalFat = 0;
+    this.selectedUserIntakes.forEach(intake => {
+      totalFat += intake.fat;
+    });
+    return totalFat;
+  }
+
+  getSpinnerProgressValue(): number {
+    let totalIntake = this.getTotalCurrentIntakesFromSelectedUser();
+    if (this.selectedPerson && (totalIntake / (this.selectedPerson?.targetIntake as number) * 100) < 100) {
+      return (totalIntake / (this.selectedPerson?.targetIntake as number) * 100)
+    } else {
+      return 100;
+    }
+  }
+
+  getColorStateOfSpinner(): 'primary' | 'warn' | 'accent' {
     if (!this.isOverMaxIntake()) {
       return 'primary';
+    } else {
+      return 'accent';
     }
-    return 'warn';
   }
 
   getSpinnerTextStyle(): {} {
@@ -121,13 +180,31 @@ export class TrackerComponent implements OnInit {
     };
   }
 
+  getSpinnerTextStyleMacros(): {} {
+    return {
+      // 26 = fontSize
+      'margin-top': '-' + (this.spinnerDiameter / 2 + 55) + 'px',
+      // And then repushing stuff the same amount of pixels
+      'padding-bottom': (this.spinnerDiameter / 2 - 15) + 'px'
+    };
+  }
+
   isOverMaxIntake(): boolean {
     return this.getTotalCurrentIntakesFromSelectedUser() > this.maxIntakeForTheDay;
   }
 
   ajouterApport(): void {
-    if (this.intakeFormGroup.value.intakeValue && this.intakeFormGroup.value.titleIntake) {
-      this.serviceIntake.addIntakes(this.itemForSelectedUser.nickname, this.intakeFormGroup.value.intakeValue, this.intakeFormGroup.value.titleIntake);
+    if (this.intakeFormGroup.value.intakeValue
+      && this.intakeFormGroup.value.titleIntake
+      && this.intakeFormGroup.value.protein
+      && this.intakeFormGroup.value.carbohydrates
+      && this.intakeFormGroup.value.fat) {
+      this.serviceIntake.addIntakes(this.itemForSelectedUser.nickname,
+        this.intakeFormGroup.value.intakeValue,
+        this.intakeFormGroup.value.titleIntake,
+        this.intakeFormGroup.value.protein,
+        this.intakeFormGroup.value.carbohydrates,
+        this.intakeFormGroup.value.fat);
       this.setItemsForSelectedUser();
       this.resetAllForm();
     }
@@ -171,6 +248,8 @@ export class TrackerComponent implements OnInit {
     }
     if (this.selectedPerson.targetIntake === undefined || this.selectedPerson.targetIntake <= 0) {
       return true;
+    } else if (this.selectedPerson.targetIntake > 0 ) {
+      this.maxIntakeForTheDay = this.selectedPerson.targetIntake;
     }
     return false;
   }
@@ -181,6 +260,10 @@ export class TrackerComponent implements OnInit {
 
   getCurrentSmiley(): string {
     return this.getSmileyAnimation();
+  }
+
+  switchIntakeMacrosDisplay(): void {
+    this.isInIntakeView = !this.isInIntakeView;
   }
 
   private setIntakesFromSelectedUser(): void {
