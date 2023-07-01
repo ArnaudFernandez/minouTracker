@@ -1,9 +1,10 @@
+<button class="addAlimentButton" mat-mini-fab (click)="openPopupAddFood()">+</button>
 <div *ngIf="!isUserLoggedAndWithoutTargetIntake()">
   <div class="selectionButtonContainer">
     <div>{{getSelectedPerson().displayName}}</div>
   </div>
-  <div class="formIntake">
-    <form  [formGroup]="intakeFormGroup">
+  <div #intakeSection id="intakeSection" class="formIntake">
+    <form [formGroup]="intakeFormGroup">
       <h1 style="color: red; margin-top: 15px" *ngIf="this.isOverMaxIntake()">OW ! STOP MANGER GROS PORC</h1>
       <div class="spinnerContainer">
         <mat-progress-spinner
@@ -26,21 +27,54 @@
 
       </div>
 
-      <div class="textInSpinner" [ngStyle]="getSpinnerTextStyle()" *ngIf="getTargetIntakeOfSelectedUser() > 0 && this.isInIntakeView" (click)="switchIntakeMacrosDisplay()">
+      <div class="textInSpinner" [ngStyle]="getSpinnerTextStyle()"
+           *ngIf="getTargetIntakeOfSelectedUser() > 0 && this.isInIntakeView" (click)="switchIntakeMacrosDisplay()">
         {{getTotalCurrentIntakesFromSelectedUser()}} / {{(this.selectedPerson?.targetIntake)}}
       </div>
-      <div class="textInSpinner" [ngStyle]="getSpinnerTextStyleMacros()" *ngIf="getTargetIntakeOfSelectedUser() > 0 && !this.isInIntakeView" (click)="switchIntakeMacrosDisplay()">
+      <div class="textInSpinner" [ngStyle]="getSpinnerTextStyleMacros()"
+           *ngIf="getTargetIntakeOfSelectedUser() > 0 && !this.isInIntakeView" (click)="switchIntakeMacrosDisplay()">
         P : {{this.getCurrentProtein()}} / {{this.selectedPerson?.proteinTarget}}<br/><br/>
         G : {{this.getCurrentCarbohydrates()}} / {{this.selectedPerson?.carbohydratesTarget}} <br/><br/>
         L : {{this.getCurrentFat()}} / {{this.selectedPerson?.fatTarget}} <br/>
       </div>
-      <div  class="textInSpinnerNotSelected" [ngStyle]="getSpinnerTextStyle()" *ngIf="getTargetIntakeOfSelectedUser() === 0">
+      <div class="textInSpinnerNotSelected" [ngStyle]="getSpinnerTextStyle()"
+           *ngIf="getTargetIntakeOfSelectedUser() === 0">
         {{getCurrentSmiley()}}
       </div>
 
+      <mat-form-field>
+        <mat-label>Sélectionnez ici</mat-label>
+        <mat-select [(value)]="selectedFood" (selectionChange)="adjustWeight()">
+          <mat-option></mat-option>
+          <mat-option *ngFor="let food of this.foods" [value]="food.food">
+            {{food.viewValue}} | {{food.food.weight}}g
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <form [formGroup]="foodSelectionFormGroup">
+      <mat-form-field *ngIf="selectedFood !== undefined">
+            <mat-label>Weight</mat-label>
+            <input matInput type="number" formControlName="weight">
+      </mat-form-field>
+      </form>
+      <div *ngIf="selectedFood !== undefined">
+        <p>Calories : {{weightChangeFactor(this.selectedFood?.calories)}}</p>
+        <p>P: {{weightChangeFactor(this.selectedFood?.protein)}} G: {{weightChangeFactor(selectedFood?.carbohydrates)}}
+          L: {{weightChangeFactor(selectedFood?.fat)}}</p>
+        <button mat-raised-button aria-label="Ajouter cet aliment" (click)="ajouterAliment()">
+          Ajouter
+        </button>
+      </div>
+
+      <br/>
+      <br/>
+      <br/>
+      <p>
+        <b>OU</b>
+      </p>
 
       <button mat-raised-button aria-label="Scanner code barre" (click)="goToScanner()">
-        Scanner le code barre
+        Scanner le code barre (NOT WORKING)
       </button>
 
       <br/>

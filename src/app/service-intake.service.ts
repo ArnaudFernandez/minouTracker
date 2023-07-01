@@ -6,6 +6,7 @@ import {AuthService} from './authentication/auth-service.service';
 import {User} from './class/user';
 import {Teams} from "./class/teams";
 import {TeamMembers} from "./class/team-members";
+import {Food} from "./class/food";
 
 @Injectable({
   providedIn: 'root'
@@ -74,6 +75,21 @@ export class ServiceIntakeService {
     }
   }
 
+  addNewFood(food: Food): Promise<any> | undefined {
+    if (JSON.parse(localStorage.getItem('user') as string).uid) {
+      return this.database.collection('food').add({
+        ownerUid: JSON.parse(localStorage.getItem('user') as string).uid,
+        foodName: food.foodName,
+        calories: food.calories,
+        protein: food.protein,
+        fat: food.fat,
+        carbohydrates: food.carbohydrates,
+        weight: food.weight
+      });
+    }
+    return undefined;
+  }
+
   /**
    *
    * GET SECTION
@@ -101,6 +117,15 @@ export class ServiceIntakeService {
       return this.database.collection('intakes', ref =>
         ref.where('uid', '==', JSON.parse(localStorage.getItem('user') as string).uid)
       ).valueChanges({idField: 'eventId'}) as Observable<Intakes[]>;
+    }
+    return undefined;
+  }
+
+  getAllFoodDocuments(): Observable<Food[]> | undefined {
+    if (localStorage.getItem('user') !== undefined) {
+      return this.database.collection('food', ref =>
+        ref.where('ownerUid', '==', JSON.parse(localStorage.getItem('user') as string).uid)
+      ).valueChanges() as Observable<Food[]>;
     }
     return undefined;
   }

@@ -1,0 +1,51 @@
+<form [formGroup]="foodForm!">
+  <mat-form-field appearance="fill">
+    <mat-label>Food Name</mat-label>
+    <input matInput type="text" id="foodName" formControlName="foodName" required>
+    <mat-error *ngIf="foodForm?.get('foodName')?.invalid && foodForm?.get('foodName')?.touched">
+      Le nom est obligatoire.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Calories</mat-label>
+    <input matInput type="number" id="calories" formControlName="calories" required>
+    <mat-error *ngIf="foodForm?.get('calories')?.invalid && foodForm?.get('calories')?.touched">
+      Les caloriesest obligatoire.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Protéine</mat-label>
+    <input matInput type="number" id="protein" formControlName="protein" required>
+    <mat-error *ngIf="foodForm?.get('protein')?.invalid && foodForm?.get('protein')?.touched">
+      Les protéines sont obligatoire.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Glucides</mat-label>
+    <input matInput type="number" id="carbohydrates" formControlName="carbohydrates" required>
+    <mat-error *ngIf="foodForm?.get('carbohydrates')?.invalid && foodForm?.get('carbohydrates')?.touched">
+      Les glucides sont obligatoire.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Lipides</mat-label>
+    <input matInput type="number" id="fat" formControlName="fat" required>
+    <mat-error *ngIf="foodForm?.get('fat')?.invalid && foodForm?.get('fat')?.touched">
+      Les lipides sont obligatoire.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Poids (g)</mat-label>
+    <input matInput type="number" id="weight" formControlName="weight" required>
+    <mat-error *ngIf="foodForm?.get('weight')?.invalid && foodForm?.get('weight')?.touched">
+      Le poids est obligatoire.
+    </mat-error>
+  </mat-form-field>
+
+  <button [disabled]="!this.foodForm?.valid" mat-raised-button color="primary" (click)="addFood()">Submit</button>
+</form>

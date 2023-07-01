@@ -18,6 +18,7 @@ import { TeamTrackerComponent } from './team-tracker/team-tracker.component';
 import {MatCardModule} from "@angular/material/card";
 import { TeamTrackerProgressComponent } from './team-tracker/team-tracker-progress/team-tracker-progress.component';
 import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatSelectModule} from "@angular/material/select";
 
 @NgModule({
   declarations: [
@@ -26,27 +27,28 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
     TeamTrackerComponent,
     TeamTrackerProgressComponent
   ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild([
-      {path: 'tracker', component: TrackerComponent, canActivate: [AuthGuard]},
-      {path: 'teamTracking', component: TeamTrackerComponent, canActivate: [AuthGuard]},
-      {path: 'teamTracking/:id', component: TeamTrackerProgressComponent, canActivate: [AuthGuard]}
-    ]),
-    MatProgressSpinnerModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatChipsModule,
-    FormsModule,
-    ReactiveFormsModule,
-    BrowserModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    MatButtonModule,
-    MatInputModule,
-    MatIconModule,
-    MatCardModule,
-    MatProgressBarModule,
-  ]
+    imports: [
+        CommonModule,
+        RouterModule.forChild([
+            {path: 'tracker', component: TrackerComponent, canActivate: [AuthGuard]},
+            {path: 'teamTracking', component: TeamTrackerComponent, canActivate: [AuthGuard]},
+            {path: 'teamTracking/:id', component: TeamTrackerProgressComponent, canActivate: [AuthGuard]}
+        ]),
+        MatProgressSpinnerModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatChipsModule,
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        MatButtonModule,
+        MatInputModule,
+        MatIconModule,
+        MatCardModule,
+        MatProgressBarModule,
+        MatSelectModule,
+    ]
 })
 export class TrackerModule { }

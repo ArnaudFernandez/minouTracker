@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AngularFirestore} from "@angular/fire/compat/firestore";
 import {ServiceIntakeService} from "../service-intake.service";
@@ -8,12 +8,15 @@ import {User} from '../class/user';
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SnackbarComponent} from "../shared/snackbar/snackbar.component";
 import {Router} from "@angular/router";
+import {Food} from "../class/food";
+import {MatDialog} from "@angular/material/dialog";
+import {AddFoodInDBComponent} from "../add-food-in-db/add-food-in-db.component";
 
 @Component({
   templateUrl: './tracker.component.html',
   styleUrls: ['./tracker.component.scss']
 })
-export class TrackerComponent implements OnInit {
+export class TrackerComponent implements OnInit, AfterViewInit {
 
   selectedPerson?: User = undefined;
   lastPersonSelected?: string = undefined;
@@ -24,7 +27,7 @@ export class TrackerComponent implements OnInit {
   /** Value for progress spinner */
   currentIntakeValue = 1200;
   maxIntakeForTheDay = 1300;
-  spinnerDiameter = 250;
+  spinnerDiameter = 0;
 
   /** Database items & selectors */
   items: unknown[] = [];
@@ -35,6 +38,11 @@ export class TrackerComponent implements OnInit {
   };
   selectedUserIntakes: Intakes[] = [];
   serviceIntake: ServiceIntakeService;
+
+  foods: [{ viewValue: string, food: Food }] = [{
+    viewValue: '',
+    food: new Food('', 0, 0, 0, 0, 0, '0')
+  }];
 
   // Emoji animation
   sportiveSmileyAnimation: string[] = ['🥵', '🤙', '🥗', '🍆', '🍌', '🍅', '🚀', '🏆', '🥇', '🚿', '🍳', '🏃', '🤸'];
@@ -53,15 +61,24 @@ export class TrackerComponent implements OnInit {
   /** FormGroup setup target intake */
   targetIntakeSetupFormGroup: FormGroup = new FormGroup({
     targetIntake: new FormControl('', Validators.minLength(1)),
-    proteinTarget: new FormControl('', Validators.minLength(1)),
-    carbohydratesTarget: new FormControl('', Validators.minLength(1)),
-    fatTarget: new FormControl('', Validators.minLength(1))
+    proteinTarget: new FormControl('', Validators.min(0)),
+    carbohydratesTarget: new FormControl('', Validators.min(0)),
+    fatTarget: new FormControl('', Validators.min(0))
   })
+
+  /** FormGroup food selection */
+  foodSelectionFormGroup: FormGroup = new FormGroup({
+    weight: new FormControl('', Validators.minLength(1))
+  })
+
+  /** Selected value of food retrieved from database */
+  selectedFood: Food | undefined = undefined;
 
   constructor(db: AngularFirestore,
               serviceIntake: ServiceIntakeService,
               private _snackbar: MatSnackBar,
-              private router: Router) {
+              private router: Router,
+              public dialog: MatDialog) {
     this.serviceIntake = serviceIntake;
     this.serviceIntake.getAllIntakesDocuments()?.subscribe(v => {
       this.items = v as unknown[];
@@ -92,6 +109,21 @@ export class TrackerComponent implements OnInit {
     });
 
     this.setIntakesFromSelectedUser();
+    this.setFoodFromSelectedUser();
+  }
+
+  openPopupAddFood(): void {
+    const dialogRef = this.dialog.open(AddFoodInDBComponent, {});
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
+
+  adjustWeight(): void {
+    this.foodSelectionFormGroup.reset();
+    this.foodSelectionFormGroup.setValue({
+      weight: this.selectedFood?.weight
+    });
   }
 
   resetTitleIntake(): void {
@@ -137,6 +169,10 @@ export class TrackerComponent implements OnInit {
     this.targetIntakeSetupFormGroup.reset({
       targetIntake: undefined
     });
+    this.foodSelectionFormGroup.reset({
+      weight: undefined
+    });
+    this.selectedFood = undefined;
   }
 
   getCurrentProtein(): number {
@@ -236,6 +272,33 @@ export class TrackerComponent implements OnInit {
     }
   }
 
+  ajouterAliment(): void {
+    if (this.foodSelectionFormGroup.value) {
+      this.serviceIntake.addIntakes(
+        this.selectedFood?.foodName as string,
+        this.weightChangeFactor(this.selectedFood?.calories) as number,
+        this.selectedFood?.foodName as string,
+        this.weightChangeFactor(this.selectedFood?.protein) as number,
+        this.weightChangeFactor(this.selectedFood?.carbohydrates) as number,
+        this.weightChangeFactor(this.selectedFood?.fat) as number);
+      this.setItemsForSelectedUser();
+      this._snackbar.openFromComponent(SnackbarComponent, {
+        duration: 5 * 1000,
+        data: {
+          text: '🍴 ' + this.selectedFood?.foodName + ' ajouté --> ' + this.selectedFood?.calories + ' cal. ajoutés au total journalier.'
+        }
+      });
+      this.resetAllForm();
+    }
+  }
+
+  weightChangeFactor(number: number | undefined): number | undefined {
+    if (number) {
+      return parseFloat(((number / (this.selectedFood as Food).weight as number) * this.foodSelectionFormGroup.value.weight).toFixed(2));
+    }
+    return undefined;
+  }
+
 
   getTotalCurrentIntakesFromSelectedUser(): number {
     let total = 0;
@@ -266,7 +329,7 @@ export class TrackerComponent implements OnInit {
     }
     if (this.selectedPerson.targetIntake === undefined || this.selectedPerson.targetIntake <= 0) {
       return true;
-    } else if (this.selectedPerson.targetIntake > 0 ) {
+    } else if (this.selectedPerson.targetIntake > 0) {
       this.maxIntakeForTheDay = this.selectedPerson.targetIntake;
     }
     return false;
@@ -300,6 +363,29 @@ export class TrackerComponent implements OnInit {
     })
   }
 
+  private setFoodFromSelectedUser(): void {
+    (this.serviceIntake.getAllFoodDocuments() as Observable<Food[]>).subscribe(value => {
+      console.log(value);
+      while(this.foods.length > 0) {
+        this.foods.pop();
+      }
+      value.forEach(food => {
+        this.foods.push({
+          viewValue: food.foodName,
+          food: new Food(
+            food.foodName,
+            food.calories,
+            food.protein,
+            food.fat,
+            food.carbohydrates,
+            food.weight,
+            food.ownerUid
+          )
+        });
+      });
+    });
+  }
+
   private setItemsForSelectedUser(): void {
     this.items.forEach(item => {
       // @ts-ignore
@@ -315,4 +401,9 @@ export class TrackerComponent implements OnInit {
     this.router.navigate(['scanner']);
   }
 
+  protected readonly undefined = undefined;
+
+  ngAfterViewInit(): void {
+    this.spinnerDiameter = (document.getElementById('intakeSection') as HTMLElement).clientWidth;
+  }
 }

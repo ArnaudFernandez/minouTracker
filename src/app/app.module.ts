@@ -27,13 +27,18 @@ import { SnackbarComponent } from './shared/snackbar/snackbar.component';
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import { BarcodeScannerComponent } from './barcode-scanner/barcode-scanner.component';
 import { BarcodeScannerLivestreamModule } from "ngx-barcode-scanner";
+import { AddFoodInDBComponent } from './add-food-in-db/add-food-in-db.component';
+import { MatDialog } from "@angular/material/dialog";
+import { MatDialogModule } from "@angular/material/dialog";
+import {TrackerComponent} from "./tracker/tracker.component";
+import {ReactiveFormsModule} from "@angular/forms";
 
 
 const routes = [
   {path: 'authentication', component: AuthenticationComponent},
   {path: 'scanner', component: BarcodeScannerComponent},
   {path: '', redirectTo: 'tracker', pathMatch: 'full'},
-  {path: '**', component: PageNotFoundComponent}
+  {path: '**', component: TrackerComponent}
 ]
 
 @NgModule({
@@ -43,7 +48,8 @@ const routes = [
     PageNotFoundComponent,
     AuthenticationComponent,
     SnackbarComponent,
-    BarcodeScannerComponent
+    BarcodeScannerComponent,
+    AddFoodInDBComponent
   ],
   imports: [
     BrowserModule,
@@ -77,9 +83,11 @@ const routes = [
     HistoryModule,
     TrackerModule,
     MatSnackBarModule,
-    BarcodeScannerLivestreamModule
+    BarcodeScannerLivestreamModule,
+    MatDialogModule,
+    ReactiveFormsModule
   ],
-  providers: [AuthService],
+  providers: [AuthService, MatDialog],
   bootstrap: [AppComponent]
 })
 export class AppModule {
