@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1688197753782,
+  "timestamp": 1688198073762,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -54,7 +54,7 @@
     "/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
     "/assets/icons/minou.png": "38a301a2486f7dd4c2f18ee3269415d20605a422",
     "/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
-    "/index.html": "f79c541576094120902caaa29299169fcb82e296",
+    "/index.html": "f1319aafceed7fc97ed3f74b4f36835bd8fb22e3",
     "/main.7adbbf711af31723.js": "60deb97c3e06c023a9d662729e5e8b0be20de0eb",
     "/manifest.webmanifest": "1d65bfd5fa8179ebe5965e01e81766f49b4b134c",
     "/polyfills.dfe807690083d2af.js": "e0e2c8cdb5331c14e72a732b5602eb7a8cb6721b",
